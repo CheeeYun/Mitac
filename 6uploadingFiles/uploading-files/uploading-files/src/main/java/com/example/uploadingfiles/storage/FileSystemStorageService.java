@@ -23,7 +23,7 @@ public class FileSystemStorageService implements StorageService {
 	private final Path rootLocation;
 
 
-	@Autowired
+//	@Autowired
 	public FileSystemStorageService(StorageProperties properties) {
 		this.rootLocation = Paths.get(properties.getLocation());
 	}//建構FSS需要丟一個StorageProperties進去會回傳一個String當作Path並存起來
