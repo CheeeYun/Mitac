@@ -4,6 +4,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.mediatype.problem.Problem;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -45,7 +46,7 @@ public class OrderController {
         order.setStatus(Status.IN_PROGRESS);
         Order newOrder =orderRepository.save(order);
 
-        return ResponseBody
+        return ResponseEntity
                 .created(linkTo(methodOn(OrderController.class).one(newOrder.getId())).toUri())
                 .body(assembler.toModel(newOrder));
     }
@@ -56,7 +57,7 @@ public class OrderController {
                 .orElseThrow(()->new OrderNotFoundException(id));
 
         if(order.getStatus()==Status.IN_PROGRESS){
-            order.setStatus(status.CANCELLED);
+            order.setStatus(Status.CANCELLED);
             return ResponseEntity.ok(assembler.toModel(orderRepository.save(order)));
         }
 
