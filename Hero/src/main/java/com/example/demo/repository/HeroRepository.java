@@ -24,5 +24,6 @@ public interface HeroRepository extends JpaRepository<Hero,Integer>{
 	@Modifying
 	@Query(value = "DELETE FROM hero WHERE heroId = :heroId", nativeQuery = true)
 	void deleteByHeroId(@Param("heroId") int heroId);
-
+	
+	List<Hero> findByNameContaining(String name);
 }

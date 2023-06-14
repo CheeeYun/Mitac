@@ -28,6 +28,7 @@ public class HeroService {
 		}
 		
 	}
+	
 	public void deleteByHeroId(int heroId) {
 		heroRepository.deleteByHeroId(heroId);
 	}
@@ -36,5 +37,9 @@ public class HeroService {
 		List<Hero> heroes=heroRepository.findAll();
 		return heroes.stream()
 				.anyMatch(hero->hero.getHeroId()== heroId);
+	}
+	
+	public List<Hero> searchHeroByName(String name) {
+		return heroRepository.findByNameContaining(name);
 	}
 }
