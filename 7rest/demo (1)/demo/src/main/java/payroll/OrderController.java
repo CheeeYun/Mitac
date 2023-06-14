@@ -31,7 +31,7 @@ public class OrderController {
         List<EntityModel<Order>> orders =orderRepository.findAll().stream()
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
-        return CollectionModel.of(Orders,
+        return CollectionModel.of(orders,
                 linkTo(methodOn(OrderController.class).all()).withSelfRel());
     }
 
