@@ -1,10 +1,13 @@
 <div *ngIf="hero">
   <h2>{{hero.name | uppercase}} Details</h2>
-  <div><span>id: </span>{{hero.id}}</div>
+  <div><span>id: </span>{{hero.heroId}}</div>
   <div>
     <label for="hero-name">Hero name: </label>
     <input id="hero-name" [(ngModel)]="hero.name" placeholder="Hero name"/>
+    <p>{{hero._links.self.href}}</p>
   </div>
+
+  
   <!-- [(ngModel)]雙向綁定hero.name 1顯示{{hero.name}} 2修改{{hero.name}} -->
   <button type="button" (click)="goBack()">go back</button>
   <button type="button" (click)="save()">save</button>

@@ -1,5 +1,5 @@
 import { Component , OnInit} from '@angular/core';
-import { Hero } from '../hero';
+import { Hero ,EmbeddedData} from '../hero';
 import { HeroService } from '../hero.service';
 
 @Component({
@@ -12,7 +12,7 @@ export class HeroesComponent implements OnInit{
   selectedHero?:Hero; //選擇英雄的屬性可以是undefined
 
   heroes: Hero[]=[];  //英雄屬性列表初始為[]
-  
+
   constructor(private heroService:HeroService){};//注入HeroService
 
   ngOnInit():void{    //實作OnInit 
@@ -22,7 +22,7 @@ export class HeroesComponent implements OnInit{
   
   getHeroes():void{   //獲得Observable<Hero[]>透過subscribe將值賦予給heroes
     this.heroService.getHeroes()
-    .subscribe(heroes=>this.heroes=heroes);
+    .subscribe(heroes=>this.heroes=heroes._embedded.heroList);
   }
 
   add(name:string):void{
@@ -34,7 +34,7 @@ export class HeroesComponent implements OnInit{
   }
   delete(hero: Hero): void {
     this.heroes = this.heroes.filter(h => h !== hero);//過濾掉不是hero的參數
-    this.heroService.deleteHero(hero.id).subscribe();
+    this.heroService.deleteHero(hero.heroId).subscribe();
   }
   
 

@@ -14,6 +14,6 @@ export class DashboardComponent implements OnInit{
   }
   getHeroes():void{
     this.heroService.getHeroes()
-        .subscribe(heroes => this.heroes =heroes.slice(0,8)); //擷取1-8個
+        .subscribe(heroes => this.heroes =heroes._embedded.heroList.slice(0,8)); //擷取1-8個
   }
 }

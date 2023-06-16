@@ -9,12 +9,14 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.model.Hero;
@@ -24,7 +26,8 @@ import com.example.demo.repository.HeroRepository;
 import com.example.demo.service.HeroService;
 
 
-
+@CrossOrigin("*")
+@RequestMapping(value="home")
 @RestController
 public class HeroController {
 
@@ -35,25 +38,28 @@ public class HeroController {
 	@Autowired
 	private HeroAssembler assembler;
 	
-	@GetMapping("/home/heroes")
+	
+	@GetMapping("/heroes")
 	public CollectionModel<?> getAllHeroes(){
 		List<EntityModel<Hero>> heroes=heroRepository.findAll()
 				.stream().map(assembler::toModel).collect(Collectors.toList());
         return CollectionModel.of(heroes);
 	}
-	
-	@GetMapping("/home/heroes/{heroId}")
+
+	@GetMapping("/heroes/{heroId}")
 	 public ResponseEntity<?> getHero(@PathVariable Integer heroId){
 		
 		if(heroService.existsHeroById(heroId)) {
 			Hero hero=heroRepository.findByHeroId(heroId);
-			assembler.toModel(hero);
-			return ResponseEntity.accepted().body(hero);
+			EntityModel<Hero> newHero=assembler.toModel(hero);
+			return ResponseEntity.accepted().body(newHero);
 		}
 		return ResponseEntity.noContent().build();
 	}
+
 	
-	@PutMapping("/home/heroes/{heroId}")
+	
+	@PutMapping("/heroes/{heroId}")
 	public ResponseEntity<Hero> updateHero(@RequestBody Hero hero,@PathVariable int heroId) {
 		 	Hero usedHero =heroRepository.findByHeroId(heroId);
 		if(heroService.existsHeroById(heroId)) {
@@ -64,8 +70,10 @@ public class HeroController {
 		
 		return ResponseEntity.notFound().build();
 	}
+
 	
-	@PostMapping("/home/heroes")
+	
+	@PostMapping("/heroes")
 	public ResponseEntity<?> addHero(@RequestBody Hero hero){
 	    Integer maxHeroId = heroService.getMaxHeroId();
 	    System.out.println(maxHeroId);
@@ -75,13 +83,16 @@ public class HeroController {
 	    newHero.setHeroId(maxHeroId);
 	    newHero.setStatus(Status.AVAILABLE);
 	    heroRepository.save(newHero);
+	    
 	    EntityModel<Hero> entityHero= assembler.toModel(newHero);
 	    
 	    return ResponseEntity.created(entityHero.getRequiredLink(IanaLinkRelations.SELF).toUri())
 	    		.body(entityHero);
 	}
-
-	@DeleteMapping("/home/heroes/{heroId}")
+	
+	
+	
+	@DeleteMapping("/heroes/{heroId}")
 	public ResponseEntity<?> deleteHero(@PathVariable Integer heroId){
 		
 		if(heroService.existsHeroById(heroId)) {
@@ -95,14 +106,16 @@ public class HeroController {
 		}
 	}
 	
-	@PutMapping("/home/heroes/cancel/{heroId}")
+	
+	@PutMapping("/heroes/cancel/{heroId}")
 	public ResponseEntity<?> cancelHero(@PathVariable Integer heroId){
 		Hero hero =heroRepository.findByHeroId(heroId);
 		hero.setStatus(Status.CANCEL);
 		return ResponseEntity.ok(assembler.toModel(heroRepository.save(hero)));
 	}
 	
-	@GetMapping("/home/heroes/search/{name}")
+
+	@GetMapping("/heroes/search/{name}")
 	public List<Hero> searchHero(@PathVariable String name){
 		List<Hero> matchHeroes=heroRepository.findByNameContaining(name);
 		return matchHeroes;

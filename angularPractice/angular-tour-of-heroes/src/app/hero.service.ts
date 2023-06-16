@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Hero } from './hero';
-import { HEROES } from './mock-heroes';
+import { Hero ,EmbeddedData} from './hero';
+// import { HEROES } from './mock-heroes';
 import { Observable, of} from 'rxjs';
 import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -9,7 +9,9 @@ import { catchError,map,tap} from 'rxjs/operators';
   providedIn: 'root'
 })
 export class HeroService {
-  private heroesUrl='api/heroes';
+  // private heroesUrl='api/heroes';
+  private newUrl='http://localhost:8080/home/heroes'
+  private embeddedData:EmbeddedData | null=null;
   httpOptions={       //請求標頭設置為JSON格式
     headers: new HttpHeaders({'Content-Type':'application/json'})
   }
@@ -18,36 +20,37 @@ export class HeroService {
     private http: HttpClient,   
     private messageService:MessageService
     ) { }
-  getHeroes():Observable<Hero[]> {
-    return this.http.get<Hero[]>(this.heroesUrl) //發送get請求返回一個Hero[]
+  getHeroes():Observable<EmbeddedData> {
+    return this.http.get<EmbeddedData>(this.newUrl) //發送get請求返回一個Hero[]
      .pipe( //類似stream() Observable的方法
       tap(_=>this.log('fetched heroes')), //tap執行若成功則打印字串 _代表不使用該參數的值
-      catchError(this.handleError<Hero[]>('getHeroes,[]'))); //接受兩個參數1錯誤的描述2默認返回值
+      catchError(this.handleError<EmbeddedData>('getHeroes'))); //接受兩個參數1錯誤的描述2默認返回值
   }
 
   getHero(id:number): Observable<Hero>{
-    const url=`${this.heroesUrl}/${id}`;
+    const url=`${this.newUrl}/${id}`;
     return this.http.get<Hero>(url).pipe(
       tap(_=>this.log(`fetched hero id=${id}`)),
       catchError(this.handleError<Hero>(`getHero id${id}`))
     )
   }
   updateHero(hero:Hero): Observable<any>{
-    return this.http.put(this.heroesUrl,hero,this.httpOptions).pipe(
+    return this.http.put(`${this.newUrl}/${hero.heroId}`,hero,this.httpOptions).pipe(
       tap(_=>this.log(`updated hero id=${hero.id}`)),
       catchError(this.handleError<any>('updateHero'))
     );
   }
 
   addHero(hero: Hero): Observable<Hero> {
-  return this.http.post<Hero>(this.heroesUrl, hero, this.httpOptions).pipe(
-    tap((newHero: Hero) => this.log(`added hero w/ id=${newHero.id}`)),//若成功責打印新id
-    catchError(this.handleError<Hero>('addHero'))
-  );
+  return this.http.post<Hero>(this.newUrl, hero, this.httpOptions)
+  // .pipe(
+  //   tap((newHero: Hero) => this.log(`added hero w/ id=${newHero.id}`)),//若成功責打印新id
+  //   catchError(this.handleError<Hero>('addHero'))
+  // );
 }
 
 deleteHero(id: number): Observable<Hero> {
-  const url = `${this.heroesUrl}/${id}`;
+  const url = `${this.newUrl}/${id}`;
   return this.http.delete<Hero>(url, this.httpOptions).pipe(
     tap(_ => this.log(`deleted hero id=${id}`)),
     catchError(this.handleError<Hero>('deleteHero'))
@@ -59,7 +62,7 @@ searchHeroes(term: string): Observable<Hero[]> {
   if (!term.trim()) { //若去掉空格還是空的 則返回[]
     return of([]);
   }
-  return this.http.get<Hero[]>(`${this.heroesUrl}/?name=${term}`).pipe( //return一個Observable<Hero[]>並且call這些API
+  return this.http.get<Hero[]>(`${this.newUrl}/search/${term}`).pipe( //return一個Observable<Hero[]>並且call這些API
     tap(x => x.length ?   //判斷有沒有值,如果有>0打印以下
        this.log(`found heroes matching "${term}"`) :
        this.log(`no heroes matching "${term}"`)),
