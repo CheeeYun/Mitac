@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  db:
+    image: 'mysql/mysql-server:8.0'
+    ports:
+           - "3310:3306"
+    environment:
+           - MYSQL_ROOT_PASSWORD=1111
+           - MYSQL_DATABASE=login
+           - MYSQL_USER=root
+           - MYSQL_PASSWORD=1111
+           - MYSQL_ROOT_HOST=%
+    volumes:
+           - ./my-datavolume:/var/lib/mysql
+    healthcheck:
+           test: ["CMD","mysqladmin","ping","-h","localhost"]
+           timeout: 10s
+           retries: 10
+    restart: always
+  backendserver:
+    build: ./Login/
+    ports:
+           - "8080:8081"
+    links:
+           - "db"
+    depends_on:
+           - "db"
+    restart: always
+  frontend:
+    build: ./my-app/
+    links:
+           - "backendserver"
+    depends_on:
+           - "backendserver"
+    ports:
+           - "80:80"      

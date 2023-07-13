@@ -1,0 +1,6 @@
+failed to get console mode for stdout: The handle is invalid.
+failed to get console mode for stdout: The handle is invalid.
+[1A[1B[0G[?25l[+] Building 0.0s (0/0)                                          docker:default
+[?25h[1A[0G[?25l[+] Building 0.0s (0/0)                                          docker:default
+[?25h[1A[0G[?25l[+] Building 0.0s (0/0)                                          docker:default
+[?25h

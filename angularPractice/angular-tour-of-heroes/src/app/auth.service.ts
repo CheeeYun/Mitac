@@ -13,7 +13,7 @@ export class AuthService {
     const url ="http://localhost:8080/checkMember";
     this.http.post<boolean>(url, member).subscribe(
       (response) => {
-        if (response === true) {
+        if (response ) {
           this.authenticated =true;
           console.log('登录成功');
           this.router.navigate(['/dashboard']);
