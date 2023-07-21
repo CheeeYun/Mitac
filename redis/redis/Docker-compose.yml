@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  myredis:
+    container_name: myredis
+    image: redis
+    restart: always
+    ports:
+      - 6379:6379
+    privileged: true
+    command: redis-server /etc/redis/redis.conf --appendonly yes
+    volumes:
+      - /d/dockers/redis/data:/data
+      - /d/dockers/redis/conf/redis.conf:/etc/redis/redis.conf
+    networks:
+      - some-network
+
+networks:
+  some-network:
+    external: true

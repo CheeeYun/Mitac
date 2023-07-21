@@ -1,0 +1,18 @@
+<p>Authentication!!</p>
+<button (click)="getList()" >pro</button>
+<button (click)="getUser()" >normal</button>
+<button (click)="logOut()">logout</button>
+<ul *ngIf="showPro">
+    <li *ngFor="let user of userList">
+      ID:{{user.id}}<br>
+      名字:{{ user.username }} <br>
+      權限:{{user.role}}
+    </li>
+  </ul>
+  <ul *ngIf="showNormal">
+    <li >
+        ID:{{users.id}}<br>
+        名字:{{ users.username }} <br>
+        權限:{{users.role}}
+    </li>
+  </ul>

@@ -1,0 +1,14 @@
+<h1>Login</h1>
+<form (ngSubmit)="login()">
+    <input type="text" [(ngModel)]="username" name="username" placeholder="Username"><br>
+    <input type="password" [(ngModel)]="password" name="password" placeholder="Password"><br>
+    <button click="submit">Submit</button>
+  </form>
+  <p></p>
+  <button (click)="register()" >Register</button>
+  <form *ngIf="Isregister">
+    <input type="text" [(ngModel)]="Rusername" name="Rusername" placeholder="輸入帳號註冊"><br>
+    <input type="password" [(ngModel)]="Rpassword" name="Rpassword" placeholder="請輸入密碼"><br>
+    <button style="color: chocolate;" (click)="enter()">確認註冊</button>
+  </form>
+  
